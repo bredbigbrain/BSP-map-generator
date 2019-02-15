@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public static class RectExtensions
+public static class RectIntExtensions
 {
-    public static bool Contains(this Rect rect, int x, int y)
+    public static bool Contains(this RectInt rect, int x, int y)
     {
-        return (x >= (int)rect.xMin) && (x < (int)rect.xMax) && (y >= (int)rect.yMin) && (y < (int)rect.yMax);
+        return (x >= rect.xMin) && (x < rect.xMax) && (y >= rect.yMin) && (y < rect.yMax);
     }
 }

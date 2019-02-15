@@ -95,7 +95,7 @@ namespace Ugly.MapGenerators.BSP
 
             for (int i = 0; i < leaves.Count; i++)
             {
-                leaves[i]?.parent.ConnectChildren();
+                leaves[i].parent.ConnectChildren();
             }
         }
 
@@ -115,7 +115,7 @@ namespace Ugly.MapGenerators.BSP
             {
                 for (int i = 0; i < leaves.Count; i++)
                 {
-                    if (leaves[i].IsPointInsize(x, y))
+                    if (leaves[i].IsPointInside(x, y))
                     {
                         return i;
                     }

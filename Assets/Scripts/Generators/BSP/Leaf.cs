@@ -5,8 +5,8 @@ using UnityEngine;
 public class Leaf
 {
     public readonly int x, y, width, height, minSize;
-    public Rect room;
-    public List<Rect> halls = new List<Rect>();
+    public RectInt room = new RectInt(-1, -1, 0, 0);
+    public List<RectInt> halls = new List<RectInt>();
 
     public Leaf leftChild; //Left or lower.
     public Leaf rightChild; //Right or higher.
@@ -40,7 +40,7 @@ public class Leaf
         {
             return false;
         }
-
+        
         if(width > height)// && width / height >= 1.25f)
         {
             splitH = false;
@@ -78,88 +78,191 @@ public class Leaf
 
     public void CreateRoom(int minSize, int maxSize)
     {
-        float xSize = Random.Range(minSize > width - 2 ? width - 2 : minSize, maxSize > width - 1 ? width - 1 : maxSize);
-        float ySize = Random.Range(minSize > height - 2 ? height - 2 : minSize, maxSize > height - 1 ? height - 1 : maxSize);
-        Vector2 roomSize = new Vector2(xSize, ySize);
-        Vector2 roomPosition = new Vector2(x + Random.Range(1, width - (int)roomSize.x), y + Random.Range(1, height - (int)roomSize.y));
-        room = new Rect(roomPosition, roomSize);
+        int xSize = Random.Range(minSize > width - 2 ? width - 2 : minSize, maxSize > width - 1 ? width - 1 : maxSize);
+        int ySize = Random.Range(minSize > height - 2 ? height - 2 : minSize, maxSize > height - 1 ? height - 1 : maxSize);
+        Vector2Int roomSize = new Vector2Int(xSize, ySize);
+        Vector2Int roomPosition = new Vector2Int(x + Random.Range(1, width - roomSize.x), y + Random.Range(1, height - roomSize.y));
+        room = new RectInt(roomPosition, roomSize);
     }
 
     public void ConnectChildren()
     {
-        if(leftChild != null && leftChild != null && !isChildrenConnected)
+        if (leftChild != null && rightChild != null && !isChildrenConnected)
         {
-            Connect();
+            RectInt lRoom = leftChild.room;
+            RectInt rRoom = rightChild.room;
+
+            if(lRoom.x == -1)
+            {
+                lRoom = leftChild.GetClosestChild(this).room;
+            }
+            else if(rRoom.x == -1)
+            {
+                rRoom = rightChild.GetClosestChild(this).room;
+            }
+
+            Connect(lRoom, rRoom);
 
             parent = null;
             isChildrenConnected = true;
         }
 
-        void Connect()
+        void Connect(RectInt lRoom, RectInt rRoom)
         {
-            var lRoom = leftChild.room;
-            var rRoom = rightChild.room;
-
             if (splitH)
             {
                 if (lRoom.xMin < rRoom.xMax && rRoom.xMin < lRoom.xMax)//Strait vertical hall.
                 {
-                    float hallHeight = rRoom.yMin - lRoom.yMax;
-                    float hallX = lRoom.xMin;
-                    int delta = (int)(lRoom.xMin - rRoom.xMax);
-                    if (delta != 0)
-                    {
-
-                        hallX = lRoom.xMax > rRoom.xMax ? Random.Range((int)(lRoom.xMin + 1), (int)(rRoom.xMax)) : Random.Range((int)(rRoom.xMin + 1), (int)(lRoom.xMax));
-                        Debug.Log($"{delta} {(int)hallX} {(int)lRoom.yMax} {lRoom.ToString()} {rRoom.ToString()}");
-                    }
-                    else
-                    {
-                        Debug.Log($"{(int)hallX} {(int)lRoom.yMax}");
-                    }
-                  
-                    AddNewHall((int)hallX, (int)lRoom.yMax, 1, (int)hallHeight);
+                    CreateVerticalHall();
                 }
                 else
-                {/*
-                    bool rand = Random.value > 0.5f;
-                    if(lRoom.xMax <= rRoom.xMin)
-                    {
-                        if(rand)
-                        {
-                            float hallHeight = 
-                            int hallX = 
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                    else
-                    {
-
-                    }*/
+                {
+                    CreateCornerHallH();
                 }
             }
             else
             {
                 if (lRoom.yMin < rRoom.yMax && rRoom.yMin < lRoom.yMax) //Strait horisontal hall.
                 {
-                    float hallWidth = rRoom.xMin - lRoom.xMax;
-                    float hallY = lRoom.yMin;
-                    int delta = (int)(lRoom.yMax - rRoom.yMax);
-                    if(delta != 0)
-                    {
-                        hallY = lRoom.yMax > rRoom.yMax ? Random.Range((int)(lRoom.yMin + 1), (int)(rRoom.yMax)) : Random.Range((int)(rRoom.yMin + 1), (int)(lRoom.yMax));
-                    }
-                    AddNewHall((int)lRoom.xMax, (int)hallY, (int)hallWidth, 1);
+                    CreateHorisontalHall();
+                }
+                else
+                {
+                    CreateCornerHallW();
                 }
             }
+
+            void CreateVerticalHall()
+            {
+                RectInt smallRoom, bigRoom;
+                if (lRoom.width > rRoom.width)
+                {
+                    smallRoom = rRoom;
+                    bigRoom = lRoom;
+                }
+                else
+                {
+                    smallRoom = lRoom;
+                    bigRoom = rRoom;
+                }
+
+                int hallHeight = rRoom.yMin - lRoom.yMax;
+                int hallX;
+
+                if (smallRoom.xMax - 1 == bigRoom.xMin)
+                {
+                    hallX = bigRoom.xMin;
+                }
+                else if (smallRoom.xMin == bigRoom.xMax - 1)
+                {
+                    hallX = smallRoom.xMin;
+                }
+                else if (smallRoom.xMin >= bigRoom.xMin && smallRoom.xMax <= bigRoom.xMax)
+                {
+                    hallX = Random.Range(smallRoom.xMin, smallRoom.xMax);
+                }
+                else if (smallRoom.xMin <= bigRoom.xMin)
+                {
+                    hallX = Random.Range(bigRoom.xMin + 1, smallRoom.xMax);
+                }
+                else
+                {
+                    hallX = Random.Range(smallRoom.xMin + 1, bigRoom.xMax);
+                }
+
+                AddNewHall(hallX, lRoom.yMax, 1, hallHeight);
+            }
+
+            void CreateHorisontalHall()
+            {
+                RectInt smallRoom, bigRoom;
+                if (lRoom.height > rRoom.height)
+                {
+                    smallRoom = rRoom;
+                    bigRoom = lRoom;
+                }
+                else
+                {
+                    smallRoom = lRoom;
+                    bigRoom = rRoom;
+                }
+
+                int hallWidth = rRoom.xMin - lRoom.xMax;
+                int hallY;
+
+                if (smallRoom.yMin == bigRoom.yMax - 1)
+                {
+                    hallY = smallRoom.yMin;
+                }
+                else if (smallRoom.yMax - 1 == bigRoom.yMin)
+                {
+                    hallY = bigRoom.yMin;
+                }
+                else if (smallRoom.yMin >= bigRoom.yMin && smallRoom.yMax <= bigRoom.yMax)
+                {
+                    hallY = Random.Range(smallRoom.yMin + 1, smallRoom.yMax);
+                }
+                else if (smallRoom.yMin <= bigRoom.yMin)
+                {
+                    hallY = Random.Range(bigRoom.yMin + 1, smallRoom.yMax);
+                }
+                else
+                {
+                    hallY = Random.Range(smallRoom.yMin + 1, bigRoom.yMax);
+                }
+
+                AddNewHall(lRoom.xMax, hallY, hallWidth, 1);
+            }
+
+            void CreateCornerHallH()
+            {
+                bool leftBelow = true;
+                if(lRoom.xMin >= rRoom.xMax)
+                {
+                    var temp = lRoom;
+                    lRoom = rRoom;
+                    rRoom = temp;
+                    leftBelow = false;
+                }
+
+                int x1, x2, y1, y2;
+
+                if(Random.value > 0.5f)
+                {
+                    x1 = Random.Range(lRoom.xMin + 1, lRoom.xMax);
+                    y1 = leftBelow ? lRoom.yMax : lRoom.yMin;
+
+                    x2 = rRoom.xMin;
+                    y2 = Random.Range(rRoom.yMin + 1, rRoom.yMax);
+
+                    AddNewHall(x1, leftBelow ? y1 : y2, 1, Mathf.Abs(y2 - y1));
+                    AddNewHall(x1, y2, Mathf.Abs(x2 - x1), 1);
+                }
+                else
+                {
+                    x1 = lRoom.xMax;
+                    y1 = Random.Range(lRoom.yMin + 1, lRoom.yMax);
+
+                    x2 = Random.Range(rRoom.xMin + 1, rRoom.xMax);
+                    y2 = leftBelow ? rRoom.yMin : rRoom.yMax;
+
+                    AddNewHall(x1, y1, Mathf.Abs(x2 - x1), 1);
+                    AddNewHall(x2, leftBelow ? y1 : y2, 1, Mathf.Abs(y2 - y1));
+
+                    Debug.Log($"{x1} {y1} {Mathf.Abs(x2 - x1)} {1}");
+                    Debug.Log($"{x2} {(leftBelow ? y1 : y2)} {1} {Mathf.Abs(y2 - y1)}");
+                }
+            }
+
+            void CreateCornerHallW()
+            { }
         }
 
         void AddNewHall(int x, int y, int width, int height)
         {
-            Rect newHall = new Rect(x, y, width, height);
+            //Debug.Log($"{x} {y} {leftChild.room} {rightChild.room}");
+
+            RectInt newHall = new RectInt(x, y, width, height);
             if (!halls.Contains(newHall))
             {
                 halls.Add(newHall);
@@ -167,7 +270,7 @@ public class Leaf
         }
     }
 
-    public bool IsPointInsize(int x, int y)
+    public bool IsPointInside(int x, int y)
     {
         return this.x <= x && this.x + width > x && this.y <= y && this.y + height > y;
     }
@@ -175,5 +278,10 @@ public class Leaf
     public bool IsPointInsideRoom(int x, int y)
     {
         return room.Contains(x, y);
+    }
+
+    public override string ToString()
+    {
+        return string.Concat("(", x, " ", y, " ", width, " ", height, ")");
     }
 }

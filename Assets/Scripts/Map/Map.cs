@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Ugly.MapGenerators.BSP;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public class Map : MonoBehaviour
     public int height = 100;
     public int width = 100, maxLeafSize = 25, minLeafSize = 5, maxRoomSize = 25, minRoomSize = 5;
 
+    [SerializeField] private bool clearConsoleOnGenerate = true;
+
     private Cell[] cells = null;
 
     private LeafsHandler leafsHandler;
@@ -19,35 +22,57 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
-        /*
-        List<Vector2> positions = new List<Vector2>();
-        var leaves = leafsHandler.leaves;
-        for (int i = 0; i < leaves.Count; i++)
-        {
-            FillLeaf(leaves[i], i);
-        }
-
-        void FillLeaf(Leaf leaf, int z)
-        {
-            for (int y = leaf.y; y < leaf.y + leaf.height; y++)
-            {
-                for (int x = leaf.x; x < leaf.x + leaf.width; x++)
-                {
-                    var cell = CreateCell(x, y).transform;
-                    Vector2 pos = cell.position;
-                    if(positions.Contains(pos))
-                    {
-                        print("Duplicate: " + pos);
-                    }
-                    else
-                    {
-                        positions.Add(pos);
-                    }
-                    cell.position += Vector3.forward * z * 0.05f;
-                }
-            }
-        }*/
         Generate();
+    }
+
+    [EasyButtons.Button("Generate")]
+    public void Generate()
+    {
+#if UNITY_EDITOR
+        if(!UnityEditor.EditorApplication.isPlaying)
+        {
+            Debug.LogWarning("Generation only works in play mode!");
+            return;
+        }
+        if(clearConsoleOnGenerate)
+        {
+            try
+            {
+                var assembly = Assembly.GetAssembly(typeof(UnityEditor.SceneView));
+                var type = assembly.GetType("UnityEditor.LogEntries");
+                var method = type.GetMethod("Clear");
+                method.Invoke(new object(), null);
+            }
+            catch
+            {
+                Debug.LogError("Cannot clear console in this versrion of Unity");
+                clearConsoleOnGenerate = false;
+            }
+        }
+#endif
+        Clear();
+        UpdateMapData();
+
+        cells = new Cell[height * width];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                cells[ToIdFromXY(x, y)] = CreateCell(x, y);
+            }
+        }
+    }
+
+    public void Clear()
+    {
+        if (cells != null)
+        {
+            for (int i = 0; i < cells.Length; i++)
+            {
+                Destroy(cells[i].gameObject);
+            }
+        }
     }
 
     public void UpdateMapData()
@@ -75,44 +100,9 @@ public class Map : MonoBehaviour
         }
     }
 
-    [EasyButtons.Button("Generate")]
-    public void Generate()
-    {
-#if UNITY_EDITOR
-        if(!UnityEditor.EditorApplication.isPlaying)
-        {
-            Debug.LogWarning("Generation only in play mode!");
-            return;
-        }
-#endif
-        Clear();
-        UpdateMapData();
-
-        cells = new Cell[height * width];
-
-        for (int x = 0; x < height; x++)
-        {
-            for (int y = 0; y < width; y++)
-            {
-                cells[ToIdFromXY(x, y)] = CreateCell(x, y);
-            }
-        }
-    }
-
-    public void Clear()
-    {
-        if (cells != null)
-        {
-            for (int i = 0; i < cells.Length; i++)
-            {
-                Destroy(cells[i].gameObject);
-            }
-        }
-    }
-
     private Cell CreateCell(int x, int y)
     {
-        Cell cell = new GameObject($"Cell {x} {y} {ToIdFromXY(x, y)}", typeof(Cell), typeof(SpriteRenderer)).GetComponent<Cell>();
+        Cell cell = new GameObject($"Cell_{x}_{y}_{ToIdFromXY(x, y)}", typeof(Cell), typeof(SpriteRenderer)).GetComponent<Cell>();
         Transform cellTrans = cell.transform;
 
         cellTrans.SetParent(transform);
@@ -136,6 +126,11 @@ public class Map : MonoBehaviour
                 isHall = true;
                 break;
             }
+        }
+        var parent = leafsHandler.leaves[leafId].parent;
+        if (parent.leftChild.room.x == -1 || parent.rightChild.room.x == -1)
+        {
+            cell.spriteRenderer.color = Color.grey;
         }
 
         if (!isHall && leafsHandler.GetRoomId(x, y) != -1)

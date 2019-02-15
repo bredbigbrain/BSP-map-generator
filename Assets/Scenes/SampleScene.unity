@@ -227,10 +227,11 @@ MonoBehaviour:
   cellSize: 0.2
   height: 50
   width: 50
-  maxLeafSize: 10
-  minLeafSize: 5
-  maxRoomSize: 15
+  maxLeafSize: 15
+  minLeafSize: 10
+  maxRoomSize: 5
   minRoomSize: 3
+  clearConsoleOnGenerate: 1
 --- !u!4 &527152954
 Transform:
   m_ObjectHideFlags: 0
