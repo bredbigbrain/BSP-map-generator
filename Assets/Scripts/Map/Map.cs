@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Ugly.MapGenerators.BSP;
+using Ugly.MapGenerators.BinarySpacePartitioning;
 using UnityEngine;
 
 public class Map : MonoBehaviour
@@ -10,13 +10,13 @@ public class Map : MonoBehaviour
     public float cellSize;
     [Space]
     public int height = 100;
-    public int width = 100, maxLeafSize = 25, minLeafSize = 5, maxRoomSize = 25, minRoomSize = 5;
-
-    [SerializeField] private bool clearConsoleOnGenerate = true;
+    public int width = 100, maxLeafSize = 25, minLeafSize = 5, maxRoomSize = 25, minRoomSize = 5, maxHallsWidht = 1;
+    [Space, SerializeField]
+    private bool clearConsoleOnGenerate = true;
 
     private Cell[] cells = null;
 
-    private LeafsHandler leafsHandler;
+    private BSP bsp;
 
     private int[] roomsCellDataIds;
 
@@ -62,6 +62,53 @@ public class Map : MonoBehaviour
                 cells[ToIdFromXY(x, y)] = CreateCell(x, y);
             }
         }
+
+        //DrawConnections();
+    }
+
+    void DrawConnections()
+    {
+        var leaf = bsp.leaves.Find((x) => x.connections.Count > 4);
+        if (leaf != null)
+        {
+            Cell cell;
+            bool discard;
+            for (int i = 0; i < cells.Length; i++)
+            {
+                discard = true;
+                cell = cells[i];
+
+                foreach (var hall in leaf.halls)
+                {
+                    if (hall.Contains(cell.x, cell.y))
+                    {
+                        discard = false;
+                        cells[i].spriteRenderer.color = Color.black;
+                        break;
+                    }
+                }
+
+                if (leaf.room.Contains(cell.x, cell.y))
+                {
+                    discard = false;
+                    cell.spriteRenderer.color = Color.red;
+                }
+                else
+                    foreach (var connecition in leaf.connections)
+                    {
+                        if (connecition.room.Contains(cell.x, cell.y))
+                        {
+                            discard = false;
+                            cell.spriteRenderer.color = Color.green;
+                        }
+                    }
+
+                if (discard)
+                {
+                    cells[i].spriteRenderer.color = new Color(0, 0, 0, 0);
+                }
+            }
+        }
     }
 
     public void Clear()
@@ -79,7 +126,7 @@ public class Map : MonoBehaviour
     {
         transform.position = new Vector3((-cellSize * width + cellSize) / 2f, (-cellSize * height + cellSize) / 2f, 0);
 
-        DataBSP data = new DataBSP(minLeafSize, maxLeafSize, minRoomSize, maxRoomSize, width, height);
+        DataBSP data = new DataBSP(minLeafSize, maxLeafSize, minRoomSize, maxRoomSize, width, height, maxHallsWidht);
 
         height = data.mapHeigh;
         width = data.mapWidth;
@@ -88,12 +135,12 @@ public class Map : MonoBehaviour
         minRoomSize = data.minRoomSize;
         maxRoomSize = data.maxRoomSize;
 
-        leafsHandler = new LeafsHandler(data);
-        leafsHandler.CreateLeaves();
+        bsp = new BSP(data);
+        bsp.CreateLeaves();
 
         int dataItemsCount = cellsData.dataItems.Length;
 
-        roomsCellDataIds = new int[leafsHandler.leaves.Count];
+        roomsCellDataIds = new int[bsp.leaves.Count];
         for (int i = 0; i < roomsCellDataIds.Length; i++)
         {
             roomsCellDataIds[i] = i % dataItemsCount;
@@ -111,13 +158,13 @@ public class Map : MonoBehaviour
         cell.map = this;
         cell.Init(x + y * width, x, y);
 
-        int leafId = leafsHandler.GetLeafId(x, y);
+        int leafId = bsp.GetLeafId(x, y);
         int cellDataId = roomsCellDataIds[leafId];
 
         cellsData.dataItems[cellDataId].SetupCell(cell, cellSize);
 
         bool isHall = false;
-        var halls = leafsHandler.leaves[leafId].parent.halls;
+        var halls = bsp.allHalls;
         for (int i = 0; i < halls.Count; i++)
         {
             if (halls[i].Contains(x, y))
@@ -127,17 +174,27 @@ public class Map : MonoBehaviour
                 break;
             }
         }
-        var parent = leafsHandler.leaves[leafId].parent;
-        if (parent.leftChild.room.x == -1 || parent.rightChild.room.x == -1)
-        {
-            cell.spriteRenderer.color = Color.grey;
-        }
 
-        if (!isHall && leafsHandler.GetRoomId(x, y) != -1)
+        if (bsp.GetRoomId(x, y) != -1)
         {
-            Color newColor = cell.spriteRenderer.color;
+            if (isHall)
+            {
+                cellsData.dataItems[cellDataId].SetupCell(cell, cellSize);
+            }
+            Color newColor = Color.red;
             newColor.a /= 4f;
             cell.spriteRenderer.color = newColor;
+        }
+        else
+        {
+            if (!isHall)
+            {
+                var parent = bsp.leaves[leafId].parent;
+                if (parent.leftChild.room.x == -1 || parent.rightChild.room.x == -1)
+                {
+                    cell.spriteRenderer.color = Color.grey;
+                }
+            }
         }
 
         return cell;

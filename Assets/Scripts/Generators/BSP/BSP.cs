@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Ugly.MapGenerators.BSP
+namespace Ugly.MapGenerators.BinarySpacePartitioning
 {
     public struct DataBSP
     {
@@ -15,7 +15,8 @@ namespace Ugly.MapGenerators.BSP
         /// <param name="maxRoomSize">>= minRoomSize</param>
         /// <param name="mapWidth">minimum 2 * minLeafSize</param>
         /// <param name="mapHeigh">minimum 2 * minLeafSize</param>
-        public DataBSP(int minLeafSize, int maxLeafSize, int minRoomSize, int maxRoomSize, int mapWidth, int mapHeigh)
+        /// <param name="hallsWidht">minimum 1</param>
+        public DataBSP(int minLeafSize, int maxLeafSize, int minRoomSize, int maxRoomSize, int mapWidth, int mapHeigh, int hallsWidht)
         {
             this.minLeafSize = minLeafSize < 5 ? 5 : minLeafSize;
             this.maxLeafSize = maxLeafSize < minLeafSize ? minLeafSize : maxLeafSize;
@@ -25,6 +26,8 @@ namespace Ugly.MapGenerators.BSP
 
             this.mapWidth = mapWidth < minLeafSize * 2 ? minLeafSize * 2 : mapWidth;
             this.mapHeigh = mapHeigh < minLeafSize * 2 ? minLeafSize * 2 : mapHeigh;
+
+            this.hallsWidht = hallsWidht > 0 ? hallsWidht : 1;
         }
 
         public readonly int mapWidth;
@@ -33,13 +36,16 @@ namespace Ugly.MapGenerators.BSP
         public readonly int maxLeafSize;
         public readonly int minRoomSize;
         public readonly int maxRoomSize;
+        public readonly int hallsWidht;
     }
 
-    public class LeafsHandler
+    public class BSP
     {
         private DataBSP dataBSP;
 
+        public Leaf root;
         public List<Leaf> leaves = new List<Leaf>();
+        public List<Hall> allHalls = new List<Hall>();
 
         public DataBSP DataBSP
         {
@@ -53,7 +59,7 @@ namespace Ugly.MapGenerators.BSP
             }
         }
 
-        public LeafsHandler(DataBSP dataBSP)
+        public BSP(DataBSP dataBSP)
         {
             DataBSP = dataBSP;
         }
@@ -61,9 +67,11 @@ namespace Ugly.MapGenerators.BSP
         public void CreateLeaves()
         {
             leaves.Clear();
+
+            root = new Leaf(0, 0, dataBSP.mapWidth, dataBSP.mapHeigh, dataBSP.minLeafSize, this);
             var allLeaves = new List<Leaf>
             {
-                new Leaf(0, 0, dataBSP.mapWidth, dataBSP.mapHeigh, dataBSP.minLeafSize)
+                root
             };
 
             Leaf _leaf;
@@ -93,9 +101,10 @@ namespace Ugly.MapGenerators.BSP
                 }
             }
 
-            for (int i = 0; i < leaves.Count; i++)
+            allHalls.Clear();
+            for (int i = 0; i < allLeaves.Count; i++)
             {
-                leaves[i].parent.ConnectChildren();
+                allLeaves[i].ConnectChildren(dataBSP.hallsWidht);
             }
         }
 
@@ -147,6 +156,42 @@ namespace Ugly.MapGenerators.BSP
                 }
             }
             return -1;
+        }
+
+        public void AddHall(Hall hall)
+        {
+            if (!allHalls.Contains(hall))
+            {
+                allHalls.Add(hall);
+
+                List<Leaf> connectedLeaves = new List<Leaf>();
+
+                Leaf leaf;
+                int leavesCount = leaves.Count;
+                for (int i = 0; i < leavesCount; i++)
+                {
+                    leaf = leaves[i];
+                    if (hall.Connects(leaf))
+                    {
+                        leaf.connections.AddRange(connectedLeaves);
+                        if(!leaf.halls.Contains(hall))
+                        {
+                            leaf.halls.Add(hall);
+                        }
+                        for (int j = 0; j < connectedLeaves.Count; j++)
+                        {
+                            connectedLeaves[j].connections.Add(leaf);
+                            if (!connectedLeaves[j].halls.Contains(hall))
+                            {
+                                connectedLeaves[j].halls.Add(hall);
+                            }
+                        }
+                        connectedLeaves.Add(leaf);
+                    }
+                }
+
+                hall.leaves.AddRange(connectedLeaves);
+            }
         }
     }
 }

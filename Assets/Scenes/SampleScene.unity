@@ -225,12 +225,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellsData: {fileID: 11400000, guid: 7d4bc9ee7981520429502d43d7516a4c, type: 2}
   cellSize: 0.2
-  height: 50
-  width: 50
+  height: 40
+  width: 400
   maxLeafSize: 15
   minLeafSize: 10
-  maxRoomSize: 5
-  minRoomSize: 3
+  maxRoomSize: 7
+  minRoomSize: 5
+  maxHallsWidht: 3
   clearConsoleOnGenerate: 1
 --- !u!4 &527152954
 Transform:
