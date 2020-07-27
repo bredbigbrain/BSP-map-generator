@@ -18,7 +18,22 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
 
         public bool Connects(Leaf leaf)
         {
-            if(rects == null)
+            return Connects(leaf.room);
+        }
+
+        public bool Connects(Hall hall)
+        {
+            foreach(var rect in hall.rects)
+            {
+                if (Connects(rect))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool Connects(RectInt rect)
+        {
+            if (rects == null)
             {
                 return false;
             }
@@ -26,7 +41,7 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             for (int i = 0; i < rects.Length; i++)
             {
                 expandedRect = new RectInt(rects[i].xMin - 1, rects[i].yMin - 1, rects[i].width + 2, rects[i].height + 2);
-                if(expandedRect.Overlaps(leaf.room))
+                if (expandedRect.Overlaps(rect))
                 {
                     return true;
                 }

@@ -226,13 +226,15 @@ MonoBehaviour:
   cellsData: {fileID: 11400000, guid: 7d4bc9ee7981520429502d43d7516a4c, type: 2}
   cellSize: 0.2
   height: 40
-  width: 400
+  width: 100
   maxLeafSize: 15
   minLeafSize: 10
   maxRoomSize: 7
   minRoomSize: 5
   maxHallsWidht: 3
+  generateOnAwake: 0
   clearConsoleOnGenerate: 1
+  drawConnections: 1
 --- !u!4 &527152954
 Transform:
   m_ObjectHideFlags: 0

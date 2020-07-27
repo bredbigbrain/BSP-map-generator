@@ -12,7 +12,11 @@ public class Map : MonoBehaviour
     public int height = 100;
     public int width = 100, maxLeafSize = 25, minLeafSize = 5, maxRoomSize = 25, minRoomSize = 5, maxHallsWidht = 1;
     [Space, SerializeField]
+    private bool generateOnAwake = true;
+    [SerializeField]
     private bool clearConsoleOnGenerate = true;
+    [SerializeField]
+    private bool drawConnections = true;
 
     private Cell[] cells = null;
 
@@ -22,19 +26,51 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
-        Generate();
+        if(generateOnAwake)
+            Generate();
     }
 
     [EasyButtons.Button("Generate")]
     public void Generate()
     {
+        if (!CheckEditor())
+            return;
+        Clear();
+        UpdateMapData();
+    }
+
+    [EasyButtons.Button("Save")]
+    public void Save()
+    {
+        if (!CheckEditor())
+            return;
+        cellsData.savedBSPData = BSP_Serializer.Serialize(bsp);
 #if UNITY_EDITOR
-        if(!UnityEditor.EditorApplication.isPlaying)
+        UnityEditor.EditorUtility.SetDirty(cellsData);
+#endif
+    }
+
+    [EasyButtons.Button("Load")]
+    public void Load()
+    {
+        if (!CheckEditor())
+            return;
+        Clear();
+        bsp = BSP_Serializer.Deserialize(cellsData.savedBSPData);
+        GetDataValues(bsp.DataBSP);
+        UpdatePosition();
+        UpdateCells();
+    }
+
+    private bool CheckEditor()
+    {
+#if UNITY_EDITOR
+        if (!UnityEditor.EditorApplication.isPlaying)
         {
             Debug.LogWarning("Generation only works in play mode!");
-            return;
+            return false;
         }
-        if(clearConsoleOnGenerate)
+        if (clearConsoleOnGenerate)
         {
             try
             {
@@ -50,25 +86,12 @@ public class Map : MonoBehaviour
             }
         }
 #endif
-        Clear();
-        UpdateMapData();
-
-        cells = new Cell[height * width];
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                cells[ToIdFromXY(x, y)] = CreateCell(x, y);
-            }
-        }
-
-        //DrawConnections();
+        return true;
     }
 
-    void DrawConnections()
+    bool DrawConnections()
     {
-        var leaf = bsp.leaves.Find((x) => x.connections.Count > 4);
+        var leaf = bsp.leavesWithRooms.Find((x) => x.connections.Count > 4);
         if (leaf != null)
         {
             Cell cell;
@@ -94,6 +117,7 @@ public class Map : MonoBehaviour
                     cell.spriteRenderer.color = Color.red;
                 }
                 else
+                {
                     foreach (var connecition in leaf.connections)
                     {
                         if (connecition.room.Contains(cell.x, cell.y))
@@ -102,13 +126,17 @@ public class Map : MonoBehaviour
                             cell.spriteRenderer.color = Color.green;
                         }
                     }
+                }
 
                 if (discard)
                 {
-                    cells[i].spriteRenderer.color = new Color(0, 0, 0, 0);
+                    var newColor = cells[i].spriteRenderer.color;
+                    newColor.a *= 0.5f;
+                    cells[i].spriteRenderer.color = newColor;// = new Color(0, 0, 0, 0);
                 }
             }
         }
+        return leaf != null;
     }
 
     public void Clear()
@@ -124,26 +152,63 @@ public class Map : MonoBehaviour
 
     public void UpdateMapData()
     {
-        transform.position = new Vector3((-cellSize * width + cellSize) / 2f, (-cellSize * height + cellSize) / 2f, 0);
+        UpdatePosition();
 
-        DataBSP data = new DataBSP(minLeafSize, maxLeafSize, minRoomSize, maxRoomSize, width, height, maxHallsWidht);
+        var data = new DataBSP(minLeafSize, maxLeafSize, minRoomSize, maxRoomSize, width, height, maxHallsWidht);
 
+        GetDataValues(data);
+
+        bsp = new BSP(data);
+        bsp.CreateLeaves();
+
+        UpdateCells();
+    }
+
+    private void GetDataValues(DataBSP data)
+    {
         height = data.mapHeigh;
         width = data.mapWidth;
         maxLeafSize = data.maxLeafSize;
         minLeafSize = data.minLeafSize;
         minRoomSize = data.minRoomSize;
         maxRoomSize = data.maxRoomSize;
+    }
 
-        bsp = new BSP(data);
-        bsp.CreateLeaves();
+    private void UpdatePosition()
+    {
+        transform.position = new Vector3((-cellSize * width + cellSize) / 2f, (-cellSize * height + cellSize) / 2f, 0);
+    }
 
+    private void UpdateCells()
+    {
         int dataItemsCount = cellsData.dataItems.Length;
-
-        roomsCellDataIds = new int[bsp.leaves.Count];
+        roomsCellDataIds = new int[bsp.leavesWithRooms.Count];
         for (int i = 0; i < roomsCellDataIds.Length; i++)
         {
             roomsCellDataIds[i] = i % dataItemsCount;
+        }
+
+        cells = new Cell[height * width];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                cells[ToIdFromXY(x, y)] = CreateCell(x, y);
+            }
+        }
+
+        if (drawConnections)
+        {
+            bool bSucess = false;
+            for (int i = 0; i < 10; ++i)
+            {
+                bSucess = DrawConnections();
+                if (bSucess)
+                    break;
+            }
+            if (!bSucess)
+                Debug.Log("No satisfied connections found!");
         }
     }
 
@@ -189,7 +254,7 @@ public class Map : MonoBehaviour
         {
             if (!isHall)
             {
-                var parent = bsp.leaves[leafId].parent;
+                var parent = bsp.leavesWithRooms[leafId].parent;
                 if (parent.leftChild.room.x == -1 || parent.rightChild.room.x == -1)
                 {
                     cell.spriteRenderer.color = Color.grey;

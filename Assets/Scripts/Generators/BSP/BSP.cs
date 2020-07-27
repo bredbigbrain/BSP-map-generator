@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Ugly.MapGenerators.BinarySpacePartitioning
 {
+    [System.Serializable]
     public struct DataBSP
     {
         /// <summary>
@@ -30,21 +31,23 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             this.hallsWidht = hallsWidht > 0 ? hallsWidht : 1;
         }
 
-        public readonly int mapWidth;
-        public readonly int mapHeigh;
-        public readonly int minLeafSize;
-        public readonly int maxLeafSize;
-        public readonly int minRoomSize;
-        public readonly int maxRoomSize;
-        public readonly int hallsWidht;
+        public int mapWidth;
+        public int mapHeigh;
+        public int minLeafSize;
+        public int maxLeafSize;
+        public int minRoomSize;
+        public int maxRoomSize;
+        public int hallsWidht;
     }
 
     public class BSP
     {
+        [HideInInspector, SerializeField]
         private DataBSP dataBSP;
 
-        public Leaf root;
-        public List<Leaf> leaves = new List<Leaf>();
+        public Leaf root = null;
+        public List<Leaf> allLeaves = new List<Leaf>();
+        public List<Leaf> leavesWithRooms = new List<Leaf>();
         public List<Hall> allHalls = new List<Hall>();
 
         public DataBSP DataBSP
@@ -66,13 +69,10 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
 
         public void CreateLeaves()
         {
-            leaves.Clear();
+            leavesWithRooms.Clear();
 
             root = new Leaf(0, 0, dataBSP.mapWidth, dataBSP.mapHeigh, dataBSP.minLeafSize, this);
-            var allLeaves = new List<Leaf>
-            {
-                root
-            };
+            allLeaves = new List<Leaf>{ root };
 
             Leaf _leaf;
             for (int i = 0; i < allLeaves.Count; i++)
@@ -90,13 +90,13 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
                         else
                         {
                             _leaf.CreateRoom(dataBSP.minRoomSize, dataBSP.maxRoomSize);
-                            leaves.Add(_leaf);
+                            leavesWithRooms.Add(_leaf);
                         }
                     }
                     else
                     {
                         _leaf.CreateRoom(dataBSP.minRoomSize, dataBSP.maxRoomSize);
-                        leaves.Add(_leaf);
+                        leavesWithRooms.Add(_leaf);
                     }
                 }
             }
@@ -113,18 +113,18 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             int id = GetLeafId(x, y);
             if(id != -1)
             {
-                return leaves[id];
+                return leavesWithRooms[id];
             }
             return null;
         }
 
         public int GetLeafId(int x, int y)
         {
-            if (leaves != null)
+            if (leavesWithRooms != null)
             {
-                for (int i = 0; i < leaves.Count; i++)
+                for (int i = 0; i < leavesWithRooms.Count; i++)
                 {
-                    if (leaves[i].IsPointInside(x, y))
+                    if (leavesWithRooms[i].IsPointInside(x, y))
                     {
                         return i;
                     }
@@ -138,18 +138,18 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             int id = GetRoomId(x, y);
             if (id != -1)
             {
-                return leaves[id];
+                return leavesWithRooms[id];
             }
             return null;
         }
 
         public int GetRoomId(int x, int y)
         {
-            if (leaves != null)
+            if (leavesWithRooms != null)
             {
-                for (int i = 0; i < leaves.Count; i++)
+                for (int i = 0; i < leavesWithRooms.Count; i++)
                 {
-                    if (leaves[i].IsPointInsideRoom(x, y))
+                    if (leavesWithRooms[i].IsPointInsideRoom(x, y))
                     {
                         return i;
                     }
@@ -162,16 +162,28 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
         {
             if (!allHalls.Contains(hall))
             {
-                allHalls.Add(hall);
-
                 List<Leaf> connectedLeaves = new List<Leaf>();
 
+                foreach (var otherHall in allHalls)
+                {
+                    if(hall.Connects(otherHall))
+                    {
+                        foreach(var otherLeaf in otherHall.leaves)
+                        {
+                            if(!connectedLeaves.Contains(otherLeaf))
+                                connectedLeaves.Add(otherLeaf);
+                        }
+                    }
+                }
+
+                allHalls.Add(hall);
+
                 Leaf leaf;
-                int leavesCount = leaves.Count;
+                int leavesCount = leavesWithRooms.Count;
                 for (int i = 0; i < leavesCount; i++)
                 {
-                    leaf = leaves[i];
-                    if (hall.Connects(leaf))
+                    leaf = leavesWithRooms[i];
+                    if (!connectedLeaves.Contains(leaf) && hall.Connects(leaf))
                     {
                         leaf.connections.AddRange(connectedLeaves);
                         if(!leaf.halls.Contains(hall))

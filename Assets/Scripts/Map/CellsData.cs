@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Ugly.MapGenerators.BinarySpacePartitioning;
 
 [CreateAssetMenu(fileName = "CellsData", menuName = "Map/CellsData", order = 0)]
 public class CellsData : ScriptableObject
 {
     public DataItem[] dataItems;
+
+    public BSP_Serializer.Data savedBSPData = null;
 
     [System.Serializable]
     public class DataItem
