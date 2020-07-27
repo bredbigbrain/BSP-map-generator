@@ -37,13 +37,19 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             {
                 return false;
             }
-            RectInt expandedRect;
+
+            RectInt expandedRect = new RectInt();
             for (int i = 0; i < rects.Length; i++)
             {
-                expandedRect = new RectInt(rects[i].xMin - 1, rects[i].yMin - 1, rects[i].width + 2, rects[i].height + 2);
+                expandedRect.xMin = rects[i].xMin - 1;
+                expandedRect.yMin = rects[i].yMin - 1;
+                expandedRect.width = rects[i].width + 2;
+                expandedRect.height = rects[i].height + 2;
                 if (expandedRect.Overlaps(rect))
                 {
-                    return true;
+                    bool cornerCase = (rect.xMax == rects[i].xMin || rect.xMin == rects[i].xMax) && (rect.yMax == rects[i].yMin || rect.yMin == rects[i].yMax);
+                    if(!cornerCase)
+                        return true;
                 }
             }
             return false;
