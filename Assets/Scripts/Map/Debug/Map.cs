@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using Ugly.MapGenerators.BinarySpacePartitioning;
 using UnityEngine;
 
@@ -15,12 +17,13 @@ public class Map : MonoBehaviour
     private bool generateOnAwake = true;
     [SerializeField]
     private bool clearConsoleOnGenerate = true;
-    [SerializeField]
-    private bool drawConnections = true;
 
     private Cell[] cells = null;
 
-    private BSP bsp;
+    public event Action<Map> OnCellsUpdated;
+
+    [NonSerialized]
+    public BSP bsp;
 
     private int[] roomsCellDataIds;
 
@@ -89,56 +92,6 @@ public class Map : MonoBehaviour
         return true;
     }
 
-    bool DrawConnections()
-    {
-        var leaf = bsp.leavesWithRooms.Find((x) => x.connections.Count > 4);
-        if (leaf != null)
-        {
-            Cell cell;
-            bool discard;
-            for (int i = 0; i < cells.Length; i++)
-            {
-                discard = true;
-                cell = cells[i];
-
-                foreach (var hall in leaf.halls)
-                {
-                    if (hall.Contains(cell.x, cell.y))
-                    {
-                        discard = false;
-                        cells[i].spriteRenderer.color = Color.black;
-                        break;
-                    }
-                }
-
-                if (leaf.room.Contains(cell.x, cell.y))
-                {
-                    discard = false;
-                    cell.spriteRenderer.color = Color.red;
-                }
-                else
-                {
-                    foreach (var connecition in leaf.connections)
-                    {
-                        if (connecition.room.Contains(cell.x, cell.y))
-                        {
-                            discard = false;
-                            cell.spriteRenderer.color = Color.green;
-                        }
-                    }
-                }
-
-                if (discard)
-                {
-                    var newColor = cells[i].spriteRenderer.color;
-                    newColor.a *= 0.5f;
-                    cells[i].spriteRenderer.color = newColor;// = new Color(0, 0, 0, 0);
-                }
-            }
-        }
-        return leaf != null;
-    }
-
     public void Clear()
     {
         if (cells != null)
@@ -166,7 +119,7 @@ public class Map : MonoBehaviour
 
     private void GetDataValues(DataBSP data)
     {
-        height = data.mapHeigh;
+        height = data.mapHeight;
         width = data.mapWidth;
         maxLeafSize = data.maxLeafSize;
         minLeafSize = data.minLeafSize;
@@ -198,18 +151,7 @@ public class Map : MonoBehaviour
             }
         }
 
-        if (drawConnections)
-        {
-            bool bSucess = false;
-            for (int i = 0; i < 10; ++i)
-            {
-                bSucess = DrawConnections();
-                if (bSucess)
-                    break;
-            }
-            if (!bSucess)
-                Debug.Log("No satisfied connections found!");
-        }
+        OnCellsUpdated?.Invoke(this);
     }
 
     private Cell CreateCell(int x, int y)
@@ -273,6 +215,11 @@ public class Map : MonoBehaviour
     public Cell GetCell(int x, int y)
     {
         return cells[x + y * width];
+    }
+
+    public int GetCellCount()
+    {
+        return cells == null ? 0 : cells.Length;
     }
 
     public void FromIdToXY(int id, out int x, out int y)

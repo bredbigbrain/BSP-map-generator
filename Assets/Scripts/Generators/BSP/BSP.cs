@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Ugly.MapGenerators.BinarySpacePartitioning
 {
     [System.Serializable]
-    public struct DataBSP
+    public struct DataBSP //: IEqualityComparer<DataBSP>
     {
         /// <summary>
         /// Map generation parameters
@@ -15,9 +17,9 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
         /// <param name="minRoomSize">minimum 3</param>
         /// <param name="maxRoomSize">>= minRoomSize</param>
         /// <param name="mapWidth">minimum 2 * minLeafSize</param>
-        /// <param name="mapHeigh">minimum 2 * minLeafSize</param>
+        /// <param name="mapHeight">minimum 2 * minLeafSize</param>
         /// <param name="hallsWidht">minimum 1</param>
-        public DataBSP(int minLeafSize, int maxLeafSize, int minRoomSize, int maxRoomSize, int mapWidth, int mapHeigh, int hallsWidht)
+        public DataBSP(int minLeafSize, int maxLeafSize, int minRoomSize, int maxRoomSize, int mapWidth, int mapHeight, int hallsWidht)
         {
             this.minLeafSize = minLeafSize < 5 ? 5 : minLeafSize;
             this.maxLeafSize = maxLeafSize < minLeafSize ? minLeafSize : maxLeafSize;
@@ -26,13 +28,39 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
             this.maxRoomSize = maxRoomSize < minRoomSize ? minRoomSize : maxRoomSize;
 
             this.mapWidth = mapWidth < minLeafSize * 2 ? minLeafSize * 2 : mapWidth;
-            this.mapHeigh = mapHeigh < minLeafSize * 2 ? minLeafSize * 2 : mapHeigh;
+            this.mapHeight = mapHeight < minLeafSize * 2 ? minLeafSize * 2 : mapHeight;
 
             this.hallsWidht = hallsWidht > 0 ? hallsWidht : 1;
         }
 
+        public DataBSP Validate()
+        {
+            minLeafSize = minLeafSize < 5 ? 5 : minLeafSize;
+            maxLeafSize = maxLeafSize < minLeafSize ? minLeafSize : maxLeafSize;
+
+            minRoomSize = minRoomSize < 3 ? 3 : minRoomSize;
+            maxRoomSize = maxRoomSize < minRoomSize ? minRoomSize : maxRoomSize;
+
+            mapWidth = mapWidth < minLeafSize * 2 ? minLeafSize * 2 : mapWidth;
+            mapHeight = mapHeight < minLeafSize * 2 ? minLeafSize * 2 : mapHeight;
+
+            hallsWidht = hallsWidht > 0 ? hallsWidht : 1;
+
+            return this;
+        }
+
+        public static bool operator ==(DataBSP l, DataBSP r)
+        {
+            return l.Equals(r);
+        }
+
+        public static bool operator !=(DataBSP l, DataBSP r)
+        {
+            return !(l == r);
+        }
+
         public int mapWidth;
-        public int mapHeigh;
+        public int mapHeight;
         public int minLeafSize;
         public int maxLeafSize;
         public int minRoomSize;
@@ -64,14 +92,18 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
 
         public BSP(DataBSP dataBSP)
         {
-            DataBSP = dataBSP;
+            var validatedData = dataBSP.Validate();
+
+            Debug.Assert(validatedData == dataBSP);
+
+            DataBSP = validatedData;
         }
 
         public void CreateLeaves()
         {
             leavesWithRooms.Clear();
 
-            root = new Leaf(0, 0, dataBSP.mapWidth, dataBSP.mapHeigh, dataBSP.minLeafSize, this);
+            root = new Leaf(0, 0, dataBSP.mapWidth, dataBSP.mapHeight, dataBSP.minLeafSize, this);
             allLeaves = new List<Leaf>{ root };
 
             Leaf _leaf;

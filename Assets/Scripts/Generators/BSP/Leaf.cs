@@ -114,6 +114,12 @@ namespace Ugly.MapGenerators.BinarySpacePartitioning
                     rLeaf = rightChild.GetClosestChild(leftChild, true);
                 }
 
+                if(lLeaf == null || rLeaf == null)
+                {
+                    ConnectDeepChildren(hallWidth);
+                    return;
+                }
+
                 Connect(lLeaf, rLeaf, hallWidth);
             }
         }

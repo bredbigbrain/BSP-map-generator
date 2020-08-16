@@ -38,7 +38,7 @@ MonoBehaviour:
       maxRoomSize: 7
       hallsWidht: 3
     rootID: 0
-    leavesWithRoomsIds: 070000000e0000000f000000100000001100000012000000130000001400000016000000190000001a0000001b0000001c0000001d0000001e00000021000000220000002300000024000000
+    leavesWithRoomsIds: 0e0000000f000000100000001500000016000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000
     allLeaves:
     - x: 0
       y: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
       connections: 
     - x: 0
       y: 0
-      width: 34
+      width: 57
       height: 40
       minSize: 10
       room:
@@ -70,9 +70,9 @@ MonoBehaviour:
       rightChildID: 4
       parentID: 0
       connections: 
-    - x: 34
+    - x: 57
       y: 0
-      width: 66
+      width: 43
       height: 40
       minSize: 10
       room:
@@ -87,8 +87,8 @@ MonoBehaviour:
       connections: 
     - x: 0
       y: 0
-      width: 34
-      height: 16
+      width: 27
+      height: 40
       minSize: 10
       room:
         x: -1
@@ -100,10 +100,10 @@ MonoBehaviour:
       rightChildID: 8
       parentID: 1
       connections: 
-    - x: 0
-      y: 16
-      width: 34
-      height: 24
+    - x: 27
+      y: 0
+      width: 30
+      height: 40
       minSize: 10
       room:
         x: -1
@@ -115,9 +115,9 @@ MonoBehaviour:
       rightChildID: 10
       parentID: 1
       connections: 
-    - x: 34
+    - x: 57
       y: 0
-      width: 47
+      width: 26
       height: 40
       minSize: 10
       room:
@@ -130,9 +130,9 @@ MonoBehaviour:
       rightChildID: 12
       parentID: 2
       connections: 
-    - x: 81
+    - x: 83
       y: 0
-      width: 19
+      width: 17
       height: 40
       minSize: 10
       room:
@@ -147,23 +147,8 @@ MonoBehaviour:
       connections: 
     - x: 0
       y: 0
-      width: 12
-      height: 16
-      minSize: 10
-      room:
-        x: 5
-        y: 1
-        width: 5
-        height: 6
-      hallsIDs: 03000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 3
-      connections: 0f000000
-    - x: 12
-      y: 0
-      width: 22
-      height: 16
+      width: 27
+      height: 12
       minSize: 10
       room:
         x: -1
@@ -176,9 +161,9 @@ MonoBehaviour:
       parentID: 3
       connections: 
     - x: 0
-      y: 16
-      width: 14
-      height: 24
+      y: 12
+      width: 27
+      height: 28
       minSize: 10
       room:
         x: -1
@@ -188,12 +173,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 17
       rightChildID: 18
-      parentID: 4
+      parentID: 3
       connections: 
-    - x: 14
-      y: 16
-      width: 20
-      height: 24
+    - x: 27
+      y: 0
+      width: 30
+      height: 28
       minSize: 10
       room:
         x: -1
@@ -205,10 +190,10 @@ MonoBehaviour:
       rightChildID: 20
       parentID: 4
       connections: 
-    - x: 34
-      y: 0
-      width: 17
-      height: 40
+    - x: 27
+      y: 28
+      width: 30
+      height: 12
       minSize: 10
       room:
         x: -1
@@ -218,12 +203,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 21
       rightChildID: 22
-      parentID: 5
+      parentID: 4
       connections: 
-    - x: 51
+    - x: 57
       y: 0
-      width: 30
-      height: 40
+      width: 26
+      height: 23
       minSize: 10
       room:
         x: -1
@@ -235,10 +220,10 @@ MonoBehaviour:
       rightChildID: 24
       parentID: 5
       connections: 
-    - x: 81
-      y: 0
-      width: 19
-      height: 27
+    - x: 57
+      y: 23
+      width: 26
+      height: 17
       minSize: 10
       room:
         x: -1
@@ -248,117 +233,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 25
       rightChildID: 26
-      parentID: 6
+      parentID: 5
       connections: 
-    - x: 81
-      y: 27
-      width: 19
-      height: 13
-      minSize: 10
-      room:
-        x: 87
-        y: 34
-        width: 5
-        height: 5
-      hallsIDs: 06000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 6
-      connections: 1a000000
-    - x: 12
-      y: 0
-      width: 12
-      height: 16
-      minSize: 10
-      room:
-        x: 15
-        y: 8
-        width: 6
-        height: 5
-      hallsIDs: 010000000300000007000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 8
-      connections: 130000000700000010000000
-    - x: 24
-      y: 0
-      width: 10
-      height: 16
-      minSize: 10
-      room:
-        x: 27
-        y: 5
-        width: 5
-        height: 5
-      hallsIDs: 07000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 8
-      connections: 0f000000
-    - x: 0
-      y: 16
-      width: 14
-      height: 13
-      minSize: 10
-      room:
-        x: 2
-        y: 20
-        width: 6
-        height: 6
-      hallsIDs: 08000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 9
-      connections: 12000000
-    - x: 0
-      y: 29
-      width: 14
-      height: 11
-      minSize: 10
-      room:
-        x: 7
-        y: 31
-        width: 5
-        height: 6
-      hallsIDs: 0400000008000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 9
-      connections: 1400000011000000
-    - x: 14
-      y: 16
-      width: 20
-      height: 11
-      minSize: 10
-      room:
-        x: 20
-        y: 17
-        width: 5
-        height: 6
-      hallsIDs: 000000000100000009000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 10
-      connections: 1c0000000f00000014000000
-    - x: 14
-      y: 27
-      width: 20
-      height: 13
-      minSize: 10
-      room:
-        x: 18
-        y: 32
-        width: 6
-        height: 5
-      hallsIDs: 0400000009000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 10
-      connections: 1200000013000000
-    - x: 34
+    - x: 83
       y: 0
       width: 17
-      height: 30
+      height: 21
       minSize: 10
       room:
         x: -1
@@ -368,26 +248,56 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 27
       rightChildID: 28
-      parentID: 11
+      parentID: 6
       connections: 
-    - x: 34
-      y: 30
+    - x: 83
+      y: 21
       width: 17
-      height: 10
+      height: 19
       minSize: 10
       room:
-        x: 41
-        y: 33
+        x: 92
+        y: 24
         width: 6
         height: 6
-      hallsIDs: 0a000000
+      hallsIDs: 0200000005000000
       leftChildID: -1
       rightChildID: -1
-      parentID: 11
-      connections: 1c000000
-    - x: 51
+      parentID: 6
+      connections: 1a0000001c000000
+    - x: 0
       y: 0
-      width: 30
+      width: 10
+      height: 12
+      minSize: 10
+      room:
+        x: 2
+        y: 6
+        width: 6
+        height: 5
+      hallsIDs: 06000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 7
+      connections: 10000000
+    - x: 10
+      y: 0
+      width: 17
+      height: 12
+      minSize: 10
+      room:
+        x: 13
+        y: 4
+        width: 5
+        height: 5
+      hallsIDs: 03000000060000000d000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 7
+      connections: 1e0000000f0000001d000000
+    - x: 0
+      y: 12
+      width: 27
       height: 17
       minSize: 10
       room:
@@ -398,12 +308,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 29
       rightChildID: 30
-      parentID: 12
+      parentID: 8
       connections: 
-    - x: 51
-      y: 17
-      width: 30
-      height: 23
+    - x: 0
+      y: 29
+      width: 27
+      height: 11
       minSize: 10
       room:
         x: -1
@@ -413,102 +323,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 31
       rightChildID: 32
-      parentID: 12
+      parentID: 8
       connections: 
-    - x: 81
+    - x: 27
       y: 0
       width: 19
-      height: 17
-      minSize: 10
-      room:
-        x: 93
-        y: 7
-        width: 5
-        height: 6
-      hallsIDs: 0c000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 13
-      connections: 1a000000
-    - x: 81
-      y: 17
-      width: 19
-      height: 10
-      minSize: 10
-      room:
-        x: 92
-        y: 18
-        width: 6
-        height: 5
-      hallsIDs: 02000000060000000c000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 13
-      connections: 230000000e00000019000000
-    - x: 34
-      y: 0
-      width: 17
-      height: 19
-      minSize: 10
-      room:
-        x: 41
-        y: 11
-        width: 6
-        height: 6
-      hallsIDs: 0d000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 21
-      connections: 1c000000
-    - x: 34
-      y: 19
-      width: 17
-      height: 11
-      minSize: 10
-      room:
-        x: 36
-        y: 20
-        width: 5
-        height: 5
-      hallsIDs: 00000000050000000a0000000d000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 21
-      connections: 1300000021000000160000001b000000
-    - x: 51
-      y: 0
-      width: 10
-      height: 17
-      minSize: 10
-      room:
-        x: 55
-        y: 5
-        width: 5
-        height: 5
-      hallsIDs: 0e000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 23
-      connections: 1e000000
-    - x: 61
-      y: 0
-      width: 20
-      height: 17
-      minSize: 10
-      room:
-        x: 63
-        y: 8
-        width: 5
-        height: 6
-      hallsIDs: 0b0000000e000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 23
-      connections: 230000001d000000
-    - x: 51
-      y: 17
-      width: 10
-      height: 23
+      height: 28
       minSize: 10
       room:
         x: -1
@@ -518,12 +338,12 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 33
       rightChildID: 34
-      parentID: 24
+      parentID: 9
       connections: 
-    - x: 61
-      y: 17
-      width: 20
-      height: 23
+    - x: 46
+      y: 0
+      width: 11
+      height: 28
       minSize: 10
       room:
         x: -1
@@ -533,194 +353,436 @@ MonoBehaviour:
       hallsIDs: 
       leftChildID: 35
       rightChildID: 36
-      parentID: 24
+      parentID: 9
       connections: 
-    - x: 51
-      y: 17
+    - x: 27
+      y: 28
+      width: 13
+      height: 12
+      minSize: 10
+      room:
+        x: 30
+        y: 31
+        width: 6
+        height: 6
+      hallsIDs: 0100000009000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 10
+      connections: 20000000160000001900000024000000
+    - x: 40
+      y: 28
+      width: 17
+      height: 12
+      minSize: 10
+      room:
+        x: 50
+        y: 29
+        width: 6
+        height: 6
+      hallsIDs: 0000000009000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 10
+      connections: 190000002400000015000000
+    - x: 57
+      y: 0
       width: 10
+      height: 23
+      minSize: 10
+      room:
+        x: -1
+        y: -1
+        width: 0
+        height: 0
+      hallsIDs: 
+      leftChildID: 37
+      rightChildID: 38
+      parentID: 11
+      connections: 
+    - x: 67
+      y: 0
+      width: 16
+      height: 23
+      minSize: 10
+      room:
+        x: -1
+        y: -1
+        width: 0
+        height: 0
+      hallsIDs: 
+      leftChildID: 39
+      rightChildID: 40
+      parentID: 11
+      connections: 
+    - x: 57
+      y: 23
+      width: 15
+      height: 17
+      minSize: 10
+      room:
+        x: 66
+        y: 27
+        width: 5
+        height: 6
+      hallsIDs: 00000000090000000b000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 12
+      connections: 1600000024000000150000001a000000
+    - x: 72
+      y: 23
+      width: 11
+      height: 17
+      minSize: 10
+      room:
+        x: 73
+        y: 29
+        width: 5
+        height: 6
+      hallsIDs: 02000000040000000b000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 12
+      connections: 0e0000002800000019000000
+    - x: 83
+      y: 0
+      width: 17
       height: 10
       minSize: 10
       room:
-        x: 52
-        y: 18
-        width: 6
-        height: 6
-      hallsIDs: 0500000010000000
-      leftChildID: -1
-      rightChildID: -1
-      parentID: 31
-      connections: 1c00000022000000
-    - x: 51
-      y: 27
-      width: 10
-      height: 13
-      minSize: 10
-      room:
-        x: 52
-        y: 28
+        x: 85
+        y: 2
         width: 6
         height: 5
-      hallsIDs: 0f0000001000000011000000
+      hallsIDs: 0c000000
       leftChildID: -1
       rightChildID: -1
-      parentID: 31
-      connections: 240000002100000023000000
-    - x: 61
-      y: 17
-      width: 20
+      parentID: 13
+      connections: 1c000000
+    - x: 83
+      y: 10
+      width: 17
+      height: 11
+      minSize: 10
+      room:
+        x: 92
+        y: 11
+        width: 6
+        height: 6
+      hallsIDs: 050000000c000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 13
+      connections: 0e0000001b000000
+    - x: 0
+      y: 12
+      width: 13
+      height: 17
+      minSize: 10
+      room:
+        x: 7
+        y: 15
+        width: 5
+        height: 6
+      hallsIDs: 0d000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 17
+      connections: 100000001e000000
+    - x: 13
+      y: 12
+      width: 14
+      height: 17
+      minSize: 10
+      room:
+        x: 19
+        y: 22
+        width: 6
+        height: 5
+      hallsIDs: 03000000070000000d000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 17
+      connections: 10000000200000001d000000
+    - x: 0
+      y: 29
+      width: 15
+      height: 11
+      minSize: 10
+      room:
+        x: 2
+        y: 33
+        width: 6
+        height: 6
+      hallsIDs: 0e000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 18
+      connections: 20000000
+    - x: 15
+      y: 29
+      width: 12
+      height: 11
+      minSize: 10
+      room:
+        x: 21
+        y: 34
+        width: 5
+        height: 5
+      hallsIDs: 01000000070000000e000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 18
+      connections: 150000001e0000001f000000
+    - x: 27
+      y: 0
+      width: 19
+      height: 11
+      minSize: 10
+      room:
+        x: 33
+        y: 3
+        width: 5
+        height: 6
+      hallsIDs: 0f000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 19
+      connections: 22000000
+    - x: 27
+      y: 11
+      width: 19
+      height: 17
+      minSize: 10
+      room:
+        x: 33
+        y: 16
+        width: 5
+        height: 6
+      hallsIDs: 080000000f000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 19
+      connections: 2400000021000000
+    - x: 46
+      y: 0
+      width: 11
       height: 13
       minSize: 10
       room:
-        x: 67
-        y: 19
+        x: 48
+        y: 4
         width: 6
         height: 6
-      hallsIDs: 020000000b00000011000000
+      hallsIDs: 10000000
       leftChildID: -1
       rightChildID: -1
-      parentID: 32
-      connections: 1a0000001e0000002200000024000000
-    - x: 61
-      y: 30
-      width: 20
-      height: 10
+      parentID: 20
+      connections: 24000000
+    - x: 46
+      y: 13
+      width: 11
+      height: 15
+      minSize: 10
+      room:
+        x: 47
+        y: 14
+        width: 6
+        height: 6
+      hallsIDs: 00000000080000000900000010000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 20
+      connections: 1600000019000000220000001500000023000000
+    - x: 57
+      y: 0
+      width: 10
+      height: 11
+      minSize: 10
+      room:
+        x: 58
+        y: 2
+        width: 5
+        height: 6
+      hallsIDs: 11000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 23
+      connections: 26000000
+    - x: 57
+      y: 11
+      width: 10
+      height: 12
+      minSize: 10
+      room:
+        x: 60
+        y: 13
+        width: 5
+        height: 5
+      hallsIDs: 0a00000011000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 23
+      connections: 2800000025000000
+    - x: 67
+      y: 0
+      width: 16
+      height: 12
       minSize: 10
       room:
         x: 72
-        y: 33
+        y: 2
         width: 6
-        height: 5
-      hallsIDs: 0f00000011000000
+        height: 6
+      hallsIDs: 12000000
       leftChildID: -1
       rightChildID: -1
-      parentID: 32
-      connections: 2200000023000000
+      parentID: 24
+      connections: 28000000
+    - x: 67
+      y: 12
+      width: 16
+      height: 11
+      minSize: 10
+      room:
+        x: 68
+        y: 17
+        width: 6
+        height: 5
+      hallsIDs: 040000000a00000012000000
+      leftChildID: -1
+      rightChildID: -1
+      parentID: 24
+      connections: 1a0000002600000027000000
     allHalls:
     - rects:
-      - x: 25
+      - x: 48
         y: 20
-        width: 11
-        height: 3
-      leavesIds: 060000000c000000
-    - rects:
-      - x: 20
-        y: 13
-        width: 1
-        height: 4
-      leavesIds: 0200000006000000
-    - rects:
-      - x: 73
-        y: 19
-        width: 19
-        height: 3
-      leavesIds: 0a00000011000000
-    - rects:
-      - x: 10
-        y: 2
-        width: 9
-        height: 3
-      - x: 16
-        y: 2
-        width: 3
-        height: 6
-      leavesIds: 0000000002000000
-    - rects:
-      - x: 12
-        y: 32
-        width: 6
-        height: 3
-      leavesIds: 0500000007000000
-    - rects:
-      - x: 41
-        y: 20
-        width: 11
-        height: 3
-      leavesIds: 0c0000000f000000
-    - rects:
-      - x: 92
-        y: 35
-        width: 5
-        height: 3
-      - x: 94
-        y: 23
-        width: 3
-        height: 12
-      leavesIds: 010000000a000000
-    - rects:
-      - x: 21
-        y: 8
-        width: 6
-        height: 2
-      leavesIds: 0200000003000000
-    - rects:
-      - x: 7
-        y: 26
-        width: 1
-        height: 5
-      leavesIds: 0400000005000000
-    - rects:
-      - x: 20
-        y: 23
         width: 3
         height: 9
-      leavesIds: 0600000007000000
+      - x: 48
+        y: 29
+        width: 18
+        height: 3
+      leavesIds: 040000000500000010000000
     - rects:
-      - x: 37
-        y: 25
-        width: 3
-        height: 10
-      - x: 37
-        y: 35
+      - x: 26
+        y: 34
         width: 4
         height: 3
-      leavesIds: 080000000c000000
+      leavesIds: 030000000c000000
     - rects:
-      - x: 67
-        y: 14
-        width: 1
-        height: 5
-      leavesIds: 0e00000011000000
+      - x: 78
+        y: 29
+        width: 14
+        height: 1
+      leavesIds: 0000000006000000
     - rects:
-      - x: 94
-        y: 13
+      - x: 18
+        y: 5
+        width: 6
+        height: 3
+      - x: 21
+        y: 5
         width: 3
-        height: 5
-      leavesIds: 090000000a000000
+        height: 17
+      leavesIds: 020000000a000000
     - rects:
-      - x: 37
-        y: 13
+      - x: 73
+        y: 22
+        width: 1
+        height: 7
+      leavesIds: 0600000014000000
+    - rects:
+      - x: 93
+        y: 17
         width: 3
         height: 7
-      - x: 37
-        y: 13
-        width: 4
+      leavesIds: 0000000008000000
+    - rects:
+      - x: 8
+        y: 6
+        width: 5
+        height: 3
+      leavesIds: 0100000002000000
+    - rects:
+      - x: 21
+        y: 27
+        width: 3
+        height: 7
+      leavesIds: 0a0000000c000000
+    - rects:
+      - x: 38
+        y: 16
+        width: 9
+        height: 3
+      leavesIds: 0e00000010000000
+    - rects:
+      - x: 36
+        y: 31
+        width: 14
+        height: 3
+      leavesIds: 04000000050000001000000003000000
+    - rects:
+      - x: 65
+        y: 17
+        width: 3
+        height: 1
+      leavesIds: 1200000014000000
+    - rects:
+      - x: 71
+        y: 29
+        width: 2
+        height: 3
+      leavesIds: 0500000006000000
+    - rects:
+      - x: 86
+        y: 7
+        width: 3
+        height: 5
+      - x: 86
+        y: 12
+        width: 6
+        height: 3
+      leavesIds: 0700000008000000
+    - rects:
+      - x: 12
+        y: 16
+        width: 11
+        height: 3
+      - x: 20
+        y: 16
+        width: 3
+        height: 6
+      leavesIds: 020000000a00000009000000
+    - rects:
+      - x: 8
+        y: 35
+        width: 13
         height: 3
       leavesIds: 0b0000000c000000
     - rects:
-      - x: 60
-        y: 8
+      - x: 33
+        y: 9
         width: 3
-        height: 2
+        height: 7
       leavesIds: 0d0000000e000000
     - rects:
-      - x: 58
-        y: 29
-        width: 19
-        height: 3
-      - x: 74
-        y: 29
-        width: 3
-        height: 4
-      leavesIds: 1000000012000000
-    - rects:
-      - x: 53
-        y: 24
+      - x: 49
+        y: 10
         width: 3
         height: 4
       leavesIds: 0f00000010000000
     - rects:
+      - x: 60
+        y: 8
+        width: 3
+        height: 5
+      leavesIds: 1100000012000000
+    - rects:
       - x: 72
-        y: 25
-        width: 1
-        height: 8
-      leavesIds: 100000001200000011000000
+        y: 8
+        width: 2
+        height: 9
+      leavesIds: 1300000014000000
